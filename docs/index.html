@@ -14,33 +14,43 @@
         <button class="menu-btn" onclick="toggleNav('rightNav')">#</button>
     </header>
 
+    <div id="overlay" onclick="closeAllDrawers()"></div>
+
     <div class="layout-wrapper">
-        <aside class="left-nav" id="leftNav">
-            <div class="drawer-header">
-                <h2>Menu</h2>
-                <button onclick="toggleNav('leftNav')">&times;</button>
+        <aside class="sidebar left-nav" id="leftNav">
+            <div class="sidebar-content">
+                <div class="drawer-header mobile-only">
+                    <h2>Menu</h2>
+                    <button onclick="toggleNav('leftNav')">&times;</button>
+                </div>
+                <h1 class="logo desktop-only">P<span>.</span></h1>
+                <nav>
+                    <a href="#" class="nav-item" onclick="closeAllDrawers()">🏠 Home</a>
+                    <button id="themeToggle" class="nav-item">🌓 Mode</button>
+                </nav>
             </div>
-            <nav>
-                <a href="#" class="nav-item" onclick="toggleNav('leftNav')">🏠 Home</a>
-                <button id="themeToggle" class="nav-item">🌓 Mode</button>
-            </nav>
         </aside>
 
         <main class="feed-container">
-            <div class="search-container">
-                <input type="text" class="search-bar" id="searchBar" placeholder="Search posts or tags...">
+            <div class="feed-header">
+                <div class="search-wrap">
+                    <input type="text" id="searchBar" placeholder="Search posts or tags...">
+                </div>
             </div>
             <div id="app">
-                <div class="loader">Fetching posts...</div>
+                <div class="loader">Loading your feed...</div>
             </div>
         </main>
 
-        <aside class="right-sidebar" id="rightNav">
-            <div class="drawer-header">
-                <h2>Trends</h2>
-                <button onclick="toggleNav('rightNav')">&times;</button>
+        <aside class="sidebar right-sidebar" id="rightNav">
+            <div class="sidebar-content">
+                <div class="drawer-header mobile-only">
+                    <h2>Trends</h2>
+                    <button onclick="toggleNav('rightNav')">&times;</button>
+                </div>
+                <h3 class="desktop-only">Trends for you</h3>
+                <div id="tagCloud"></div>
             </div>
-            <div class="trends-content" id="tagCloud"></div>
         </aside>
     </div>
 
