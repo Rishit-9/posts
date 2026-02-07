@@ -8,48 +8,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="mobile-header">
-        <button class="menu-btn" onclick="toggleNav('leftNav')">☰</button>
-        <h1 onclick="location.hash=''; location.reload();">P<span>.</span></h1>
-        <button class="menu-btn" onclick="toggleNav('rightNav')">#</button>
+    <header class="mobile-nav-bar">
+        <button class="nav-trigger" onclick="toggleDrawer('leftDrawer')">☰</button>
+        <h1 class="logo-mini">P<span>.</span></h1>
+        <button class="nav-trigger" onclick="toggleDrawer('rightDrawer')">#</button>
     </header>
 
-    <div id="overlay" onclick="closeAllDrawers()"></div>
+    <div id="drawer-overlay" onclick="closeAllDrawers()"></div>
 
-    <div class="layout-wrapper">
-        <aside class="sidebar left-nav" id="leftNav">
-            <div class="sidebar-content">
-                <div class="drawer-header mobile-only">
-                    <h2>Menu</h2>
-                    <button onclick="toggleNav('leftNav')">&times;</button>
-                </div>
-                <h1 class="logo desktop-only">P<span>.</span></h1>
-                <nav>
+    <div class="app-container">
+        <aside class="sidebar left-side" id="leftDrawer">
+            <div class="sidebar-wrapper">
+                <h1 class="logo pc-only">P<span>.</span></h1>
+                <nav class="side-nav">
                     <a href="#" class="nav-item" onclick="closeAllDrawers()">🏠 Home</a>
                     <button id="themeToggle" class="nav-item">🌓 Mode</button>
                 </nav>
             </div>
         </aside>
 
-        <main class="feed-container">
-            <div class="feed-header">
-                <div class="search-wrap">
-                    <input type="text" id="searchBar" placeholder="Search posts or tags...">
-                </div>
-            </div>
-            <div id="app">
-                <div class="loader">Loading your feed...</div>
-            </div>
+        <main class="feed-column">
+            <header class="feed-header">
+                <h2>Home</h2>
+            </header>
+            <div id="app"></div>
         </main>
 
-        <aside class="sidebar right-sidebar" id="rightNav">
-            <div class="sidebar-content">
-                <div class="drawer-header mobile-only">
-                    <h2>Trends</h2>
-                    <button onclick="toggleNav('rightNav')">&times;</button>
+        <aside class="sidebar right-side" id="rightDrawer">
+            <div class="sidebar-wrapper">
+                <div class="search-section">
+                    <input type="text" id="searchBar" placeholder="Search Posts">
                 </div>
-                <h3 class="desktop-only">Trends for you</h3>
-                <div id="tagCloud"></div>
+                <div class="trends-container">
+                    <h3>Trends for you</h3>
+                    <div id="tagCloud"></div>
+                </div>
             </div>
         </aside>
     </div>
