@@ -3,32 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Svalipi | Feed</title>
-    
-    <meta property="og:title" content="Posts - Personal Feed">
-    <meta property="og:description" content="A dynamic personal social space.">
-    <meta property="og:url" content="https://yourusername.github.io/posts/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://picsum.photos/1200/630"> <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Svalipi / Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="layout-wrapper">
+        <aside class="left-nav">
+            <h1 class="logo" onclick="location.hash=''">S<span>.</span></h1>
+            <nav>
+                <a href="#" class="active">🏠 Home</a>
+                <a href="#" onclick="document.getElementById('searchBar').focus()">🔍 Search</a>
+                <button id="themeToggle">🌓 Mode</button>
+            </nav>
+        </aside>
 
-    <header>
-        <div class="nav-content">
-            <h1 onclick="location.hash=''; location.reload();">Svalipi<span>.</span></h1>
-            <div class="nav-controls">
-                <input type="text" id="searchBar" placeholder="Search posts or #tags...">
-                <button id="themeToggle" title="Toggle Theme">🌓</button>
+        <main class="feed-container">
+            <header class="feed-header">
+                <h2>Home</h2>
+            </header>
+            
+            <div id="app">
+                <div class="loader">Loading posts...</div>
             </div>
-        </div>
-    </header>
+        </main>
 
-    <div id="tagCloud" class="tag-container"></div>
-
-    <main id="app">
-        <div class="loader">Loading your feed...</div>
-    </main>
+        <aside class="right-sidebar">
+            <div class="search-box">
+                <input type="text" id="searchBar" placeholder="Search Svalipi">
+            </div>
+            <div class="trends-card">
+                <h3>Trends for you</h3>
+                <div id="tagCloud"></div>
+            </div>
+        </aside>
+    </div>
 
     <div id="modal" class="modal" onclick="closeModalOnSideClick(event)">
         <div class="modal-content">
