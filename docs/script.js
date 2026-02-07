@@ -5,27 +5,30 @@ async function init() {
         const response = await fetch('posts.json');
         const fileList = await response.json();
         const postPromises = fileList.map(file => fetch(`data/${file}`).then(res => res.json()));
+        
         allPosts = await Promise.all(postPromises);
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         renderPosts(allPosts);
         renderTrends();
         checkURL();
-    } catch (e) { console.error("Loading error:", e); }
+    } catch (e) {
+        document.getElementById('app').innerHTML = `<p style="padding:20px;">Add your first post to data/ folder.</p>`;
+    }
 }
 
 function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(post => `
         <article class="post" onclick="openPost('${post.id}')">
-            <div class="avatar"></div>
+            <div class="avatar">${post.title.charAt(0)}</div>
             <div class="post-body">
                 <div class="post-header">
-                    <b>MyName</b> <span>@me · ${post.date}</span>
+                    <b>Admin</b> <span>@me · ${post.date}</span>
                 </div>
                 <div class="post-text">${post.previewText}</div>
-                ${post.images && post.images.length ? `<img src="${post.images[0]}" class="post-img">` : ''}
-                <div style="color:var(--accent); margin-top:8px; font-size:0.9rem;">
+                ${post.images && post.images.length ? `<img src="${post.images[0]}" class="post-img" alt="post image">` : ''}
+                <div style="color:var(--accent); margin-top:10px; font-size:0.9rem;">
                     ${post.tags.map(t => `#${t}`).join(' ')}
                 </div>
             </div>
@@ -34,17 +37,18 @@ function renderPosts(posts) {
 }
 
 function renderTrends() {
-    const tags = [...new Set(allPosts.flatMap(p => p.tags))];
+    const tagMap = {};
+    allPosts.flatMap(p => p.tags).forEach(t => tagMap[t] = (tagMap[t] || 0) + 1);
     const container = document.getElementById('tagCloud');
-    container.innerHTML = tags.map(t => `
-        <a href="#" class="tag-link" onclick="filterByTag('${t}')">#${t}</a>
+    container.innerHTML = Object.keys(tagMap).map(tag => `
+        <a href="#" class="tag-link" onclick="filterByTag('${tag}')">#${tag} <br><small style="font-weight:normal;color:var(--dimText)">${tagMap[tag]} posts</small></a>
     `).join('');
 }
 
 function filterByTag(tag) {
     const filtered = allPosts.filter(p => p.tags.includes(tag));
     renderPosts(filtered);
-    document.querySelector('.feed-header h2').innerText = `#${tag}`;
+    document.getElementById('feedTitle').innerText = `#${tag}`;
 }
 
 function openPost(id) {
@@ -53,20 +57,40 @@ function openPost(id) {
     window.location.hash = id;
     const modal = document.getElementById('modal');
     document.getElementById('modalBody').innerHTML = `
-        <div class="post-header"><b>MyName</b> <span style="color:var(--dimText)">@me</span></div>
-        <div class="post-text" style="font-size:1.2rem; margin-top:10px;">${post.fullContent}</div>
-        ${post.images.map(img => `<img src="${img}" class="post-img" style="margin-top:10px;">`).join('')}
+        <div class="post-header">
+            <div class="avatar">${post.title.charAt(0)}</div>
+            <div style="margin-left:10px"><b>Admin</b><br><small style="color:var(--dimText)">@me</small></div>
+        </div>
+        <div class="post-text" style="font-size:1.2rem; margin-top:20px;">${post.fullContent}</div>
+        <div class="gallery">
+            ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
+        </div>
+        <div style="color:var(--dimText); margin-top:20px; font-size:0.9rem; border-top:1px solid var(--border); padding-top:15px;">
+            ${post.date} · Svalipi Posts
+        </div>
     `;
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
-function closeModal() { document.getElementById('modal').style.display = 'none'; window.location.hash = ''; }
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    window.location.hash = '';
+}
+
 function closeModalOnSideClick(e) { if (e.target.id === 'modal') closeModal(); }
 
 document.getElementById('themeToggle').addEventListener('click', () => {
     const root = document.documentElement;
-    const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', newTheme);
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+});
+
+document.getElementById('searchBar').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = allPosts.filter(p => p.title.toLowerCase().includes(term) || p.previewText.toLowerCase().includes(term));
+    renderPosts(filtered);
 });
 
 function checkURL() {
