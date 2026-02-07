@@ -1,0 +1,12 @@
+{
+    "id": "welcome-to-svalipi",
+    "title": "Welcome to Svalipi",
+    "date": "2026-02-08",
+    "tags": ["Intro", "Web", "New"],
+    "previewText": "This is a preview",
+    "fullContent": "This is the full story. Anything can be written here \n\nYou can use multiple paragraphs, share your thoughts, and everything will be formatted nicely. \n\nCheck out the images above!",
+    "images": [
+        "https://picsum.photos/1200/800",
+        "https://picsum.photos/1200/801"
+    ]
+}
