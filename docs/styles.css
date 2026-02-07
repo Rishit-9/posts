@@ -69,19 +69,57 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .trend-item:last-child { border: none; }
 
 /* MOBILE RESPONSIVE (Phone Only) */
-.mobile-header, #drawer-overlay { display: none; }
+.mobile-header {
+    display: none; /* Hidden on PC */
+}
 
 @media (max-width: 1000px) {
-    .layout-grid { display: block; } 
-    .pc-only { display: none; }
+    /* Kill the 3-column PC grid */
+    .layout-grid { 
+        display: block; 
+    } 
     
+    .pc-only { 
+        display: none; 
+    }
+    
+    /* Mobile Header Cleanup */
     .mobile-header { 
-        display: flex; justify-content: space-between; align-items: center; 
-        padding: 12px 20px; border-bottom: 1px solid var(--border); 
-        background: var(--bg); position: sticky; top: 0; z-index: 100; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 10px 15px; 
+        border-bottom: 1px solid var(--border); 
+        background: var(--bg); 
+        position: sticky; 
+        top: 0; 
+        z-index: 100; 
     }
 
-    /* THE FIX: Solid Sidebar Backgrounds */
+    /* Remove white squares from buttons */
+    .nav-btn { 
+        background: transparent !important; 
+        border: none !important; 
+        outline: none; 
+        font-size: 1.6rem; 
+        color: var(--text); 
+        cursor: pointer; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Restore Blue Dot Color */
+    .logo-mobile {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+    .logo-mobile span {
+        color: var(--accent) !important;
+    }
+
+    /* Force Solid Sidebars (No Transparency) */
     .sidebar { 
         position: fixed; 
         top: 0; 
@@ -90,22 +128,18 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
         z-index: 1000; 
         transition: transform 0.3s ease; 
         padding-top: 10px;
-        /* Forced visibility and solid paint */
         visibility: visible !important;
         opacity: 1 !important;
     }
 
-    /* Dark Mode Sidebar Paint */
+    /* Theme-specific solid backgrounds */
     [data-theme="dark"] .sidebar {
         background-color: #000000 !important;
     }
-
-    /* Light Mode Sidebar Paint */
     [data-theme="light"] .sidebar {
         background-color: #ffffff !important;
     }
 
-    /* Side-specific borders and sliding */
     .left-sidebar { 
         left: 0; 
         transform: translateX(-100%); 
@@ -118,24 +152,29 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
         border-left: 1px solid var(--border); 
     }
 
-    /* Sidebar inner content must also be solid */
-    .sidebar-inner {
-        background-color: inherit;
-        height: 100%;
-        width: 100%;
+    .sidebar.active { 
+        transform: translateX(0); 
     }
 
-    .sidebar.active { transform: translateX(0); }
-
+    /* Dark Overlay for Feed when menu is open */
     #drawer-overlay.active { 
         display: block; 
         position: fixed; 
         inset: 0; 
         background: rgba(0,0,0,0.7); 
         z-index: 500; 
+        backdrop-filter: blur(4px);
     }
 
-    .feed-container { width: 100%; border: none; }
+    /* Feed adjustments for phone */
+    .feed-container { 
+        width: 100%; 
+        border: none; 
+    }
+
+    .trends-card {
+        margin: 10px;
+    }
 }
 /* Modal Restoration */
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; }
