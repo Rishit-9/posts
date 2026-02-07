@@ -11,25 +11,21 @@ async function init() {
         renderPosts(allPosts);
         renderTrends();
         checkURL();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Loading error:", e); }
 }
 
 function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(post => `
         <article class="post" onclick="openPost('${post.id}')">
-            <div class="avatar-placeholder">${post.title.charAt(0)}</div>
+            <div class="avatar"></div>
             <div class="post-body">
                 <div class="post-header">
-                    <b>MyName</b> <span>@me · ${new Date(post.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span>
+                    <b>MyName</b> <span>@me · ${post.date}</span>
                 </div>
                 <div class="post-text">${post.previewText}</div>
-                ${post.images && post.images.length ? `
-                    <div class="post-img-container">
-                        <img src="${post.images[0]}" loading="lazy">
-                    </div>
-                ` : ''}
-                <div style="margin-top:10px; color:var(--accent); font-size:0.8rem;">
+                ${post.images && post.images.length ? `<img src="${post.images[0]}" class="post-img">` : ''}
+                <div style="color:var(--accent); margin-top:8px; font-size:0.9rem;">
                     ${post.tags.map(t => `#${t}`).join(' ')}
                 </div>
             </div>
@@ -38,16 +34,10 @@ function renderPosts(posts) {
 }
 
 function renderTrends() {
-    const tagMap = {};
-    allPosts.flatMap(p => p.tags).forEach(t => tagMap[t] = (tagMap[t] || 0) + 1);
-    
+    const tags = [...new Set(allPosts.flatMap(p => p.tags))];
     const container = document.getElementById('tagCloud');
-    container.innerHTML = Object.keys(tagMap).map(tag => `
-        <div class="trend-item" onclick="filterByTag('${tag}')">
-            <span class="trend-count">Trending</span>
-            <span class="trend-tag">#${tag}</span>
-            <span class="trend-count">${tagMap[tag]} posts</span>
-        </div>
+    container.innerHTML = tags.map(t => `
+        <a href="#" class="tag-link" onclick="filterByTag('${t}')">#${t}</a>
     `).join('');
 }
 
@@ -63,37 +53,20 @@ function openPost(id) {
     window.location.hash = id;
     const modal = document.getElementById('modal');
     document.getElementById('modalBody').innerHTML = `
-        <div class="post-header">
-            <div class="avatar-placeholder">${post.title.charAt(0)}</div>
-            <div style="margin-left:10px"><b>MyName</b><br><small style="color:var(--dimText)">@me</small></div>
-        </div>
-        <div class="post-text" style="font-size:1.3rem; margin-top:15px;">${post.fullContent}</div>
-        <div class="images-gallery">
-            ${post.images.map(img => `<img src="${img}" style="width:100%; border-radius:16px; margin-top:15px;">`).join('')}
-        </div>
-        <div style="color:var(--dimText); padding:15px 0; border-bottom:1px solid var(--border)">
-            ${new Date(post.date).toLocaleTimeString()} · ${new Date(post.date).toLocaleDateString()}
-        </div>
+        <div class="post-header"><b>MyName</b> <span style="color:var(--dimText)">@me</span></div>
+        <div class="post-text" style="font-size:1.2rem; margin-top:10px;">${post.fullContent}</div>
+        ${post.images.map(img => `<img src="${img}" class="post-img" style="margin-top:10px;">`).join('')}
     `;
     modal.style.display = 'block';
 }
 
-function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    window.location.hash = '';
-}
-
+function closeModal() { document.getElementById('modal').style.display = 'none'; window.location.hash = ''; }
 function closeModalOnSideClick(e) { if (e.target.id === 'modal') closeModal(); }
-
-document.getElementById('searchBar').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = allPosts.filter(p => p.title.toLowerCase().includes(term) || p.previewText.toLowerCase().includes(term));
-    renderPosts(filtered);
-});
 
 document.getElementById('themeToggle').addEventListener('click', () => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', newTheme);
 });
 
 function checkURL() {
