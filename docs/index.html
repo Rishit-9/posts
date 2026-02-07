@@ -8,38 +8,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="mobile-nav-bar">
-        <button class="nav-trigger" onclick="toggleDrawer('leftDrawer')">☰</button>
-        <h1 class="logo-mini">P<span>.</span></h1>
-        <button class="nav-trigger" onclick="toggleDrawer('rightDrawer')">#</button>
+    <header class="mobile-header">
+        <button class="nav-btn" onclick="toggleDrawer('leftNav')">☰</button>
+        <h1 class="logo-mobile">P<span>.</span></h1>
+        <button class="nav-btn" onclick="toggleDrawer('rightNav')">#</button>
     </header>
 
     <div id="drawer-overlay" onclick="closeAllDrawers()"></div>
 
-    <div class="app-container">
-        <aside class="sidebar left-side" id="leftDrawer">
-            <div class="sidebar-wrapper">
+    <div class="layout-grid">
+        <aside class="sidebar left-sidebar" id="leftNav">
+            <div class="fixed-sidebar">
                 <h1 class="logo pc-only">P<span>.</span></h1>
-                <nav class="side-nav">
-                    <a href="#" class="nav-item" onclick="closeAllDrawers()">🏠 Home</a>
-                    <button id="themeToggle" class="nav-item">🌓 Mode</button>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link" onclick="closeAllDrawers()">🏠 Home</a>
+                    <button id="themeToggle" class="nav-link">🌓 Mode</button>
                 </nav>
             </div>
         </aside>
 
-        <main class="feed-column">
+        <main class="feed-container">
             <header class="feed-header">
                 <h2>Home</h2>
             </header>
             <div id="app"></div>
         </main>
 
-        <aside class="sidebar right-side" id="rightDrawer">
-            <div class="sidebar-wrapper">
-                <div class="search-section">
+        <aside class="sidebar right-sidebar" id="rightNav">
+            <div class="fixed-sidebar">
+                <div class="search-container">
                     <input type="text" id="searchBar" placeholder="Search Posts">
                 </div>
-                <div class="trends-container">
+                <div class="trends-card">
                     <h3>Trends for you</h3>
                     <div id="tagCloud"></div>
                 </div>
