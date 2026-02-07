@@ -1,75 +1,92 @@
-:root[data-theme="dark"] {
-    --bg: #000000; --border: #2f3336; --text: #e7e9ea; --dim: #71767b;
-    --accent: #1d9bf0; --hover: rgba(255,255,255,0.05); --card: #16181c;
-}
-:root[data-theme="light"] {
-    --bg: #ffffff; --border: #eff3f4; --text: #0f1419; --dim: #536471;
-    --accent: #1d9bf0; --hover: rgba(0,0,0,0.03); --card: #f7f9f9;
+let allPosts = [];
+
+function toggleDrawer(id) {
+    document.getElementById(id).classList.toggle('active');
+    document.getElementById('drawer-overlay').classList.toggle('active');
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
-
-/* PC Grid Restoration */
-.layout-grid {
-    display: grid;
-    grid-template-columns: 275px 600px 350px;
-    justify-content: center;
-    margin: 0 auto;
+function closeAllDrawers() {
+    document.getElementById('leftNav').classList.remove('active');
+    document.getElementById('rightNav').classList.remove('active');
+    document.getElementById('drawer-overlay').classList.remove('active');
 }
 
-.sidebar { height: 100vh; position: sticky; top: 0; }
-.left-sidebar { border-right: 1px solid var(--border); }
-.right-sidebar { border-left: 1px solid var(--border); }
-.fixed-sidebar { padding: 20px; }
-
-.logo { font-size: 2.2rem; margin-bottom: 25px; }
-.logo span { color: var(--accent); }
-
-.nav-link { 
-    display: block; width: 100%; padding: 12px 15px; border-radius: 30px; 
-    text-decoration: none; color: var(--text); font-size: 1.2rem; 
-    border: none; background: none; text-align: left; cursor: pointer; margin-bottom: 10px;
-}
-.nav-link:hover { background: var(--hover); }
-
-/* Feed */
-.feed-container { border-right: 1px solid var(--border); min-height: 100vh; }
-.feed-header { 
-    padding: 15px; border-bottom: 1px solid var(--border); 
-    position: sticky; top: 0; background: var(--bg); z-index: 10;
+async function init() {
+    try {
+        const res = await fetch('posts.json');
+        const files = await res.json();
+        const promises = files.map(f => fetch(`data/${f}`).then(r => r.json()));
+        allPosts = await Promise.all(promises);
+        allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        renderPosts(allPosts);
+        renderTrends();
+        checkURL();
+    } catch (e) { console.error("Load failed", e); }
 }
 
-/* Post Styling */
-.post { padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; cursor: pointer; }
-.avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-.post-img { width: 100%; border-radius: 16px; margin-top: 10px; border: 1px solid var(--border); }
-
-/* Trends & Search */
-.search-container { margin-bottom: 20px; }
-.search-container input {
-    width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--border);
-    background: var(--card); color: var(--text); outline: none;
-}
-.trends-card { background: var(--card); border-radius: 16px; padding: 15px; }
-.trends-card h3 { margin-bottom: 15px; font-size: 1.2rem; }
-.trend-item { padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-
-/* Mobile logic - Ensure z-index is higher than PC header */
-.mobile-header, #drawer-overlay { display: none; }
-
-@media (max-width: 1000px) {
-    .layout-grid { grid-template-columns: 1fr; }
-    .pc-only { display: none; }
-    .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
-    .sidebar { position: fixed; top: 0; width: 280px; z-index: 1000; background: var(--bg); transition: 0.3s; }
-    .left-sidebar { left: 0; transform: translateX(-100%); }
-    .right-sidebar { right: 0; transform: translateX(100%); }
-    .sidebar.active { transform: translateX(0); }
-    #drawer-overlay.active { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; }
+function renderPosts(posts) {
+    const container = document.getElementById('app');
+    container.innerHTML = posts.map(p => `
+        <article class="post" onclick="openPost('${p.id}')">
+            <div class="avatar">${p.title.charAt(0)}</div>
+            <div class="post-body">
+                <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
+                <div class="post-text" style="margin-top:5px;">${p.previewText}</div>
+                ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img">` : ''}
+                <div style="margin-top:10px; color:var(--accent); font-weight:600;">
+                    ${p.tags.map(t => `#${t}`).join(' ')}
+                </div>
+            </div>
+        </article>
+    `).join('');
 }
 
-/* Modal Restoration */
-.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; }
-.modal-content { background: var(--bg); max-width: 600px; margin: 20px auto; border-radius: 16px; padding: 25px; height: 90vh; overflow-y: auto; }
-.close-btn { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--dim); }
+function renderTrends() {
+    const tagMap = {};
+    allPosts.flatMap(p => p.tags).forEach(t => tagMap[t] = (tagMap[t] || 0) + 1);
+    const container = document.getElementById('tagCloud');
+    container.innerHTML = Object.keys(tagMap).map(tag => `
+        <div class="nav-link" style="font-size:1rem; border-bottom: 1px solid var(--border); border-radius:0;" onclick="filterByTag('${tag}'); closeAllDrawers();">
+            <div style="color:var(--accent); font-weight:bold;">#${tag}</div>
+            <div style="font-size:0.8rem; color:var(--dim)">${tagMap[tag]} posts</div>
+        </div>
+    `).join('');
+}
+
+function filterByTag(tag) {
+    const filtered = allPosts.filter(p => p.tags.includes(tag));
+    renderPosts(filtered);
+    document.querySelector('.feed-header h2').innerText = `#${tag}`;
+}
+
+function openPost(id) {
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+    window.location.hash = id;
+    const body = document.getElementById('modalBody');
+    body.innerHTML = `
+        <div class="post-header" style="display:flex; gap:12px; margin-bottom:20px;">
+            <div class="avatar">${post.title.charAt(0)}</div>
+            <div><b>Admin</b><br><small style="color:var(--dim)">@me</small></div>
+        </div>
+        <div style="font-size:1.15rem; line-height:1.6; white-space:pre-wrap;">${post.fullContent}</div>
+        ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+function closeModal() { document.getElementById('modal').style.display = 'none'; window.location.hash = ''; }
+function closeModalOnSideClick(e) { if (e.target.id === 'modal') closeModal(); }
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+function checkURL() {
+    const id = window.location.hash.substring(1);
+    if (id) openPost(id);
+}
+
+window.onhashchange = checkURL;
+init();
