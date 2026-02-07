@@ -80,50 +80,62 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
         padding: 12px 20px; border-bottom: 1px solid var(--border); 
         background: var(--bg); position: sticky; top: 0; z-index: 100; 
     }
-    
-    .nav-btn { background: none; border: none; font-size: 1.6rem; color: var(--text); cursor: pointer; }
 
-    /* Fix: Ensure background is solid and sidebar is visible */
-.sidebar { 
+    /* THE FIX: Solid Sidebar Backgrounds */
+    .sidebar { 
         position: fixed; 
         top: 0; 
         width: 280px; 
         height: 100vh; 
-        
-        /* This fills the ENTIRE sidebar strip with solid color */
-        background-color: var(--bg) !important; 
-        
-        /* Ensure it sits on top of the feed */
         z-index: 1000; 
-        
         transition: transform 0.3s ease; 
         padding-top: 10px;
-        display: block !important; /* Ensures it doesn't try to follow grid rules */
+        /* Forced visibility and solid paint */
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
-    /* Add a border to the mobile drawers so they look distinct from the background */
+    /* Dark Mode Sidebar Paint */
+    [data-theme="dark"] .sidebar {
+        background-color: #000000 !important;
+    }
+
+    /* Light Mode Sidebar Paint */
+    [data-theme="light"] .sidebar {
+        background-color: #ffffff !important;
+    }
+
+    /* Side-specific borders and sliding */
     .left-sidebar { 
         left: 0; 
         transform: translateX(-100%); 
-        border-right: 1px solid var(--border) !important; 
+        border-right: 1px solid var(--border); 
     }
     
     .right-sidebar { 
         right: 0; 
         transform: translateX(100%); 
-        border-left: 1px solid var(--border) !important; 
+        border-left: 1px solid var(--border); 
     }
 
-    /* The 'Active' state when you click the menu buttons */
-    .sidebar.active { 
-        transform: translateX(0); 
+    /* Sidebar inner content must also be solid */
+    .sidebar-inner {
+        background-color: inherit;
+        height: 100%;
+        width: 100%;
     }
 
-    /* Keep the card look for Trends, but make sure the bar behind it is solid */
-    .trends-card { 
-        background: var(--card); 
-        margin: 10px; 
+    .sidebar.active { transform: translateX(0); }
+
+    #drawer-overlay.active { 
+        display: block; 
+        position: fixed; 
+        inset: 0; 
+        background: rgba(0,0,0,0.7); 
+        z-index: 500; 
     }
+
+    .feed-container { width: 100%; border: none; }
 }
 /* Modal Restoration */
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; }
