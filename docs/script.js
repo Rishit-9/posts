@@ -28,7 +28,8 @@ function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <div class="avatar">A</div> <div class="post-body">
+            <div class="avatar">A</div> 
+            <div class="post-body">
                 <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
                 ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img">` : ''}
@@ -47,7 +48,8 @@ function openPost(id) {
     const body = document.getElementById('modalBody');
     body.innerHTML = `
         <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <div class="avatar">A</div> <div>
+            <div class="avatar">A</div> 
+            <div>
                 <b>Admin</b> <span style="color:var(--dim)">@me</span>
                 <div style="color:var(--dim); font-size:0.9rem;">${post.date}</div>
             </div>
