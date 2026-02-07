@@ -2,35 +2,31 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Svalipi / Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Posts</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="layout-wrapper">
         <aside class="left-nav">
-            <h1 class="logo" onclick="location.hash=''">S<span>.</span></h1>
+            <h1 class="logo" onclick="location.hash=''; location.reload();">P<span>.</span></h1>
             <nav>
-                <a href="#" class="active">🏠 Home</a>
-                <a href="#" onclick="document.getElementById('searchBar').focus()">🔍 Search</a>
-                <button id="themeToggle">🌓 Mode</button>
+                <a href="#" class="nav-item">🏠 <span class="nav-text">Home</span></a>
+                <button id="themeToggle" class="nav-item">🌓 <span class="nav-text">Mode</span></button>
             </nav>
         </aside>
 
         <main class="feed-container">
             <header class="feed-header">
-                <h2>Home</h2>
+                <h2>Posts</h2>
             </header>
-            
-            <div id="app">
-                <div class="loader">Loading posts...</div>
-            </div>
+            <div id="app"></div>
         </main>
 
         <aside class="right-sidebar">
             <div class="search-box">
-                <input type="text" id="searchBar" placeholder="Search Svalipi">
+                <input type="text" id="searchBar" placeholder="Search Posts">
             </div>
             <div class="trends-card">
                 <h3>Trends for you</h3>
