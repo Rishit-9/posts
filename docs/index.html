@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Posts</title>
-    <meta property="og:title" content="Posts">
-    <meta property="og:description" content="My personal social feed.">
-    <meta property="og:type" content="website">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <header class="mobile-top-nav">
+        <button class="icon-btn" onclick="toggleLeftNav()">☰</button>
+        <h1 class="logo-small" onclick="location.hash=''; location.reload();">P<span>.</span></h1>
+        <button class="icon-btn" onclick="toggleRightNav()">#</button>
+    </header>
+
     <div class="layout-wrapper">
-        <aside class="left-nav">
-            <h1 class="logo" onclick="location.hash=''; location.reload();">P<span>.</span></h1>
+        <aside class="left-nav" id="leftNav">
+            <div class="drawer-header">
+                <h1 class="logo">P<span>.</span></h1>
+                <button class="close-drawer" onclick="toggleLeftNav()">&times;</button>
+            </div>
             <nav>
                 <a href="#" class="nav-item">🏠 <span class="nav-text">Home</span></a>
                 <button id="themeToggle" class="nav-item">🌓 <span class="nav-text">Mode</span></button>
@@ -21,20 +27,28 @@
         </aside>
 
         <main class="feed-container">
-            <header class="feed-header">
+            <header class="feed-header desktop-only">
                 <h2 id="feedTitle">Home</h2>
             </header>
+            
+            <div class="mobile-search">
+                <input type="text" class="search-input" id="searchBarMobile" placeholder="Search Posts...">
+            </div>
+
             <div id="app">
                 <div class="loader">Loading feed...</div>
             </div>
         </main>
 
-        <aside class="right-sidebar">
-            <div class="search-box">
+        <aside class="right-sidebar" id="rightNav">
+            <div class="drawer-header">
+                <h3>Trends</h3>
+                <button class="close-drawer" onclick="toggleRightNav()">&times;</button>
+            </div>
+            <div class="search-box desktop-only">
                 <input type="text" id="searchBar" placeholder="Search Posts">
             </div>
             <div class="trends-card">
-                <h3>Trends for you</h3>
                 <div id="tagCloud"></div>
             </div>
         </aside>
