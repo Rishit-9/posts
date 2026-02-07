@@ -1,17 +1,13 @@
 let allPosts = [];
 
-// Drawer Logic
-function toggleNav(id) {
-    const el = document.getElementById(id);
-    const overlay = document.getElementById('overlay');
-    el.classList.toggle('active');
-    overlay.classList.toggle('active');
+function toggleDrawer(id) {
+    document.getElementById(id).classList.toggle('active');
+    document.getElementById('drawer-overlay').classList.toggle('active');
 }
 
 function closeAllDrawers() {
-    document.getElementById('leftNav').classList.remove('active');
-    document.getElementById('rightNav').classList.remove('active');
-    document.getElementById('overlay').classList.remove('active');
+    document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('active'));
+    document.getElementById('drawer-overlay').classList.remove('active');
 }
 
 async function init() {
@@ -24,18 +20,21 @@ async function init() {
         renderPosts(allPosts);
         renderTrends();
         checkURL();
-    } catch (e) { console.error("Init failed", e); }
+    } catch (e) { console.error(e); }
 }
 
 function renderPosts(posts) {
-    const app = document.getElementById('app');
-    app.innerHTML = posts.map(p => `
+    const container = document.getElementById('app');
+    container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <div class="avatar">${p.title.charAt(0)}</div>
+            <div class="avatar"></div>
             <div class="post-body">
-                <div class="post-header"><b>Admin</b> <span style="color:var(--dimText)">@me · ${p.date}</span></div>
-                <div class="post-text">${p.previewText}</div>
+                <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
+                <div class="post-text" style="margin: 5px 0 10px;">${p.previewText}</div>
                 ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img">` : ''}
+                <div style="margin-top:10px;">
+                    ${p.tags.map(t => `<span class="tag-blue">#${t}</span>`).join('')}
+                </div>
             </div>
         </article>
     `).join('');
@@ -46,10 +45,10 @@ function renderTrends() {
     allPosts.flatMap(p => p.tags).forEach(t => tagMap[t] = (tagMap[t] || 0) + 1);
     const container = document.getElementById('tagCloud');
     container.innerHTML = Object.keys(tagMap).map(tag => `
-        <div class="trends-item" onclick="filterByTag('${tag}'); closeAllDrawers();">
-            <div style="font-size:0.8rem; color:var(--dimText)">Trending</div>
-            <div class="tag-text">#${tag}</div>
-            <div style="font-size:0.8rem; color:var(--dimText)">${tagMap[tag]} posts</div>
+        <div class="trend-item" onclick="filterByTag('${tag}'); closeAllDrawers();">
+            <div style="font-size:0.8rem; color:var(--dim)">Trending</div>
+            <div style="color:var(--accent); font-weight:bold;">#${tag}</div>
+            <div style="font-size:0.8rem; color:var(--dim)">${tagMap[tag]} posts</div>
         </div>
     `).join('');
 }
@@ -57,16 +56,12 @@ function renderTrends() {
 function filterByTag(tag) {
     const filtered = allPosts.filter(p => p.tags.includes(tag));
     renderPosts(filtered);
-    window.scrollTo(0,0);
+    document.querySelector('.feed-header h2').innerText = `#${tag}`;
 }
 
 document.getElementById('searchBar').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    const filtered = allPosts.filter(p => 
-        p.title.toLowerCase().includes(term) || 
-        p.previewText.toLowerCase().includes(term) ||
-        p.tags.some(t => t.toLowerCase().includes(term))
-    );
+    const filtered = allPosts.filter(p => p.title.toLowerCase().includes(term) || p.previewText.toLowerCase().includes(term));
     renderPosts(filtered);
 });
 
@@ -76,13 +71,9 @@ function openPost(id) {
     window.location.hash = id;
     const body = document.getElementById('modalBody');
     body.innerHTML = `
-        <div class="post-header" style="margin-bottom:20px;">
-            <div class="avatar">${post.title.charAt(0)}</div>
-            <div style="margin-left:12px;"><b>Admin</b><br><small style="color:var(--dimText)">@me</small></div>
-        </div>
-        <p style="font-size:1.1rem; line-height:1.6; white-space:pre-wrap;">${post.fullContent}</p>
+        <div style="margin-bottom:20px;"><b>Admin</b> <small style="color:var(--dim)">@me</small></div>
+        <p style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap;">${post.fullContent}</p>
         ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
-        <div style="margin-top:20px; color:var(--accent)">${post.tags.map(t => `#${t}`).join(' ')}</div>
     `;
     document.getElementById('modal').style.display = 'block';
 }
