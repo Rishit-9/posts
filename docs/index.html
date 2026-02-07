@@ -10,7 +10,7 @@
 <body>
     <header class="mobile-header">
         <button class="nav-btn" onclick="toggleDrawer('leftNav')">☰</button>
-        <h1 class="logo-mobile">P<span>.</span></h1>
+        <h1 class="logo-mobile" onclick="location.hash=''; location.reload();">P<span>.</span></h1>
         <button class="nav-btn" onclick="toggleDrawer('rightNav')">#</button>
     </header>
 
@@ -18,7 +18,7 @@
 
     <div class="layout-grid">
         <aside class="sidebar left-sidebar" id="leftNav">
-            <div class="fixed-sidebar">
+            <div class="sidebar-inner">
                 <h1 class="logo pc-only">P<span>.</span></h1>
                 <nav class="nav-menu">
                     <a href="#" class="nav-link" onclick="closeAllDrawers()">🏠 Home</a>
@@ -35,7 +35,7 @@
         </main>
 
         <aside class="sidebar right-sidebar" id="rightNav">
-            <div class="fixed-sidebar">
+            <div class="sidebar-inner">
                 <div class="search-container">
                     <input type="text" id="searchBar" placeholder="Search Posts">
                 </div>
