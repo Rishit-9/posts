@@ -4,7 +4,7 @@
     "date": "2026-02-08",
     "tags": ["Intro", "Web", "New"],
     "previewText": "This is a preview",
-    "fullContent": "This is the full story. Anything can be written here \n\nYou can use multiple paragraphs, share your thoughts, and everything will be formatted nicely. \n\nCheck out the images above!",
+    "fullContent": "This is where it shows the full post. \n\nIt's upon me whether to continue with the preview text or just write anything else here lol. \n\nThese images are random btw, they change with every refresh.",
     "images": [
         "https://picsum.photos/1200/800",
         "https://picsum.photos/1200/801"
