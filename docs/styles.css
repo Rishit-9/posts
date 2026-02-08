@@ -73,66 +73,76 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     display: none; /* Hidden on PC */
 }
 
+To ensure we fix the transparency, the "white squares" on buttons, and the blue dot all at once, yes—this is the complete and optimized @media block for your styles.css.
+
+I have added -webkit-appearance: none and box-shadow: none to the buttons, which is usually the "secret ingredient" to killing those stubborn white boxes on iPhones and some Android browsers.
+
+Complete CSS @media Block
+CSS
 @media (max-width: 1000px) {
-    /* Kill the 3-column PC grid */
+    /* 1. Kill the PC Grid & Center Content */
     .layout-grid { 
-        display: block; 
+        display: block !important; 
     } 
-    
     .pc-only { 
-        display: none; 
+        display: none !important; 
     }
     
-    /* Mobile Header Cleanup */
+    /* 2. Fix Mobile Header & Restore Blue Dot */
     .mobile-header { 
-        display: flex; 
+        display: flex !important; 
         justify-content: space-between; 
         align-items: center; 
         padding: 10px 15px; 
         border-bottom: 1px solid var(--border); 
-        background: var(--bg); 
+        background: var(--bg) !important; 
         position: sticky; 
         top: 0; 
         z-index: 100; 
     }
 
-    /* Remove white squares from buttons */
+    /* 3. The "Anti-White-Square" Button Fix */
     .nav-btn { 
         background: transparent !important; 
+        background-color: transparent !important;
         border: none !important; 
-        outline: none; 
+        outline: none !important; 
+        box-shadow: none !important;
+        -webkit-appearance: none; /* Critical for iOS/Safari */
         font-size: 1.6rem; 
-        color: var(--text); 
+        color: var(--text) !important; 
         cursor: pointer; 
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 5px;
     }
 
-    /* Restore Blue Dot Color */
     .logo-mobile {
         font-size: 1.8rem;
         font-weight: 700;
         color: var(--text);
     }
+
+    /* Force the dot to be Blue (#1d9bf0) */
     .logo-mobile span {
-        color: var(--accent) !important;
+        color: #1d9bf0 !important;
     }
 
-    /* Force Solid Sidebars (No Transparency) */
+    /* 4. Force Solid Sidebar Drawers */
     .sidebar { 
-        position: fixed; 
+        position: fixed !important; 
         top: 0; 
         width: 280px; 
         height: 100vh; 
-        z-index: 1000; 
+        z-index: 1000 !important; 
         transition: transform 0.3s ease; 
         padding-top: 10px;
         visibility: visible !important;
         opacity: 1 !important;
     }
 
-    /* Theme-specific solid backgrounds */
+    /* Target Dark and Light themes specifically to ensure solid paint */
     [data-theme="dark"] .sidebar {
         background-color: #000000 !important;
     }
@@ -153,23 +163,22 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     }
 
     .sidebar.active { 
-        transform: translateX(0); 
+        transform: translateX(0) !important; 
     }
 
-    /* Dark Overlay for Feed when menu is open */
+    /* 5. Overlay & Feed Adjustments */
     #drawer-overlay.active { 
-        display: block; 
+        display: block !important; 
         position: fixed; 
         inset: 0; 
-        background: rgba(0,0,0,0.7); 
+        background: rgba(0,0,0,0.8) !important; 
         z-index: 500; 
         backdrop-filter: blur(4px);
     }
 
-    /* Feed adjustments for phone */
     .feed-container { 
-        width: 100%; 
-        border: none; 
+        width: 100% !important; 
+        border: none !important; 
     }
 
     .trends-card {
