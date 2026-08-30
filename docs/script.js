@@ -10,13 +10,10 @@ function closeAllDrawers() {
     document.getElementById('drawer-overlay').classList.remove('active');
 }
 
-// 🕒 NEW: Converts the post's time to the viewer's local device time
 function formatLocalTime(dateStr) {
     try {
         const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr; // Fallback if format is weird
-        
-        // Formats to e.g., "Aug 31, 2026, 4:37 PM"
+        if (isNaN(d.getTime())) return dateStr; 
         return d.toLocaleString(undefined, { 
             year: 'numeric', month: 'short', day: 'numeric',
             hour: 'numeric', minute: '2-digit'
@@ -34,16 +31,33 @@ function resetFeed() {
     closeAllDrawers();
 }
 
+// Share Button Logic
+function sharePost(id, e) {
+    if (e) e.stopPropagation(); 
+    
+    let siteUrl = window.location.origin + window.location.pathname;
+    if (!siteUrl.endsWith('/')) siteUrl += '/';
+    const shareLink = `${siteUrl}p/${id}.html`;
+    
+    navigator.clipboard.writeText(shareLink).then(() => {
+        const btn = e.target.closest('.share-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.style.color = '#00ba7c'; 
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.color = '';
+        }, 2000);
+    });
+}
+
 async function init() {
     try {
         const res = await fetch('posts.json');
         const files = await res.json();
         const promises = files.map(f => fetch(`data/${f}`).then(r => r.json()));
         allPosts = await Promise.all(promises);
-        
-        // Sorting works perfectly with the new full timestamps
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
         renderPosts(allPosts);
         renderTrends();
         checkURL();
@@ -56,15 +70,19 @@ function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <!-- PFP updated to RG -->
             <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
             <div class="post-body">
-                <!-- Username updated to Rishit and Date uses formatLocalTime -->
                 <div class="post-header"><b>Rishit</b> <span style="color:var(--dim)">@me · ${formatLocalTime(p.date)}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
                 ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img" onerror="this.style.display='none'">` : ''}
-                <div style="margin-top:10px; color:var(--accent); font-weight:600;">
-                    ${p.tags.map(t => `#${t}`).join(' ')}
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                    <div style="color:var(--accent); font-weight:600;">
+                        ${p.tags.map(t => `#${t}`).join(' ')}
+                    </div>
+                    <button class="share-btn" onclick="sharePost('${p.id}', event)">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"></path></svg>
+                    </button>
                 </div>
             </div>
         </article>
@@ -107,18 +125,22 @@ function openPost(id) {
     const body = document.getElementById('modalBody');
     body.innerHTML = `
         <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <!-- PFP updated to RG -->
             <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
             <div>
-                <!-- Username updated to Rishit -->
                 <b>Rishit</b> <span style="color:var(--dim)">@me</span>
                 <div style="color:var(--dim); font-size:0.9rem;">${formatLocalTime(post.date)}</div>
             </div>
         </div>
         <div style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap; margin-bottom:15px;">${post.fullContent}</div>
         ${post.images.map(img => `<img src="${img}" class="post-img" onerror="this.style.display='none'">`).join('')}
-        <div style="margin-top:15px; color:var(--accent); font-weight:bold;">
-            ${post.tags.map(t => `#${t}`).join(' ')}
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+            <div style="color:var(--accent); font-weight:bold;">
+                ${post.tags.map(t => `#${t}`).join(' ')}
+            </div>
+            <button class="share-btn" onclick="sharePost('${post.id}', event)">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"></path></svg>
+            </button>
         </div>
     `;
     document.getElementById('modal').style.display = 'block';
