@@ -61,6 +61,14 @@ function filterByTag(tag) {
     document.querySelector('.feed-header h2').innerText = `#${tag}`;
 }
 
+function resetFeed() {
+    renderPosts(allPosts); // Brings back all posts
+    document.querySelector('.feed-header h2').innerText = 'Home'; // Resets the top header
+    document.getElementById('searchBar').value = ''; // Clears the search bar
+    window.location.hash = ''; // Clears any post ID from the URL
+    closeAllDrawers(); // Keeps mobile clean
+}
+
 document.getElementById('searchBar').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = allPosts.filter(p => 
