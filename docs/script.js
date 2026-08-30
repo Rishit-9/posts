@@ -6,8 +6,7 @@ function toggleDrawer(id) {
 }
 
 function closeAllDrawers() {
-    document.getElementById('leftNav').classList.remove('active');
-    document.getElementById('rightNav').classList.remove('active');
+    document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('active'));
     document.getElementById('drawer-overlay').classList.remove('active');
 }
 
@@ -21,14 +20,16 @@ async function init() {
         renderPosts(allPosts);
         renderTrends();
         checkURL();
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+        document.getElementById('app').innerHTML = `<div style="padding:20px;">No posts found. Add a JSON file!</div>`;
+    }
 }
 
 function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <div class="avatar">A</div> 
+            <div class="avatar">A</div>
             <div class="post-body">
                 <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
@@ -39,28 +40,6 @@ function renderPosts(posts) {
             </div>
         </article>
     `).join('');
-}
-
-function openPost(id) {
-    const post = allPosts.find(p => p.id === id);
-    if (!post) return;
-    window.location.hash = id;
-    const body = document.getElementById('modalBody');
-    body.innerHTML = `
-        <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <div class="avatar">A</div> 
-            <div>
-                <b>Admin</b> <span style="color:var(--dim)">@me</span>
-                <div style="color:var(--dim); font-size:0.9rem;">${post.date}</div>
-            </div>
-        </div>
-        <div style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap; margin-bottom:15px;">${post.fullContent}</div>
-        ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
-        <div style="margin-top:15px; color:var(--accent); font-weight:bold;">
-            ${post.tags.map(t => `#${t}`).join(' ')}
-        </div>
-    `;
-    document.getElementById('modal').style.display = 'block';
 }
 
 function renderTrends() {
@@ -84,9 +63,35 @@ function filterByTag(tag) {
 
 document.getElementById('searchBar').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    const filtered = allPosts.filter(p => p.previewText.toLowerCase().includes(term) || p.tags.some(t => t.toLowerCase().includes(term)));
+    const filtered = allPosts.filter(p => 
+        p.title.toLowerCase().includes(term) || 
+        p.previewText.toLowerCase().includes(term) ||
+        p.tags.some(t => t.toLowerCase().includes(term))
+    );
     renderPosts(filtered);
 });
+
+function openPost(id) {
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+    window.location.hash = id;
+    const body = document.getElementById('modalBody');
+    body.innerHTML = `
+        <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <div class="avatar">A</div>
+            <div>
+                <b>Admin</b> <span style="color:var(--dim)">@me</span>
+                <div style="color:var(--dim); font-size:0.9rem;">${post.date}</div>
+            </div>
+        </div>
+        <div style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap; margin-bottom:15px;">${post.fullContent}</div>
+        ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
+        <div style="margin-top:15px; color:var(--accent); font-weight:bold;">
+            ${post.tags.map(t => `#${t}`).join(' ')}
+        </div>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
 
 function closeModal() { document.getElementById('modal').style.display = 'none'; window.location.hash = ''; }
 function closeModalOnSideClick(e) { if (e.target.id === 'modal') closeModal(); }
