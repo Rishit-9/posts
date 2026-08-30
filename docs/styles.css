@@ -10,7 +10,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-/* PC GRID - STABLE & CENTERED */
+/* --- PC GRID LAYOUT --- */
 .layout-grid {
     display: grid;
     grid-template-columns: 275px 600px 350px;
@@ -23,7 +23,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     height: 100vh; 
     position: sticky; 
     top: 0; 
-    padding-top: 20px; /* Keeps Logo/Search from touching the top border */
+    padding-top: 20px; 
+    z-index: 10;
 }
 
 .left-sidebar { border-right: 1px solid var(--border); }
@@ -33,7 +34,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .logo { font-size: 2.2rem; margin-bottom: 30px; padding-left: 20px; font-weight: 700; cursor: pointer; }
 .logo span { color: var(--accent); }
 
-/* Sidebar Navigation */
+/* Navigation Links */
 .nav-link { 
     display: block; width: fit-content; padding: 12px 25px 12px 20px; border-radius: 30px; 
     text-decoration: none; color: var(--text); font-size: 1.25rem; 
@@ -49,143 +50,75 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     backdrop-filter: blur(12px); z-index: 50; 
 }
 
-/* Post Styling */
+/* Post Cards */
 .post { padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; cursor: pointer; transition: 0.2s; }
 .post:hover { background: var(--hover); }
-.avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; }
+.avatar { 
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); 
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
+    color: white; font-weight: bold; font-size: 1.2rem; 
+}
 .post-img { width: 100%; border-radius: 16px; margin-top: 12px; border: 1px solid var(--border); }
 
-/* Trends & Search Spacing */
+/* Trends & Search */
 .search-container { padding: 0 20px 20px 20px; }
 .search-container input { 
     width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--border); 
     background: var(--card); color: var(--text); outline: none; 
 }
-.trends-card { 
-    background: var(--card); border-radius: 16px; padding: 20px; 
-    margin: 0 20px; /* Fix: Keeps trends from touching the feed border */
-}
+.trends-card { background: var(--card); border-radius: 16px; padding: 20px; margin: 0 20px; }
 .trend-item { padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
 .trend-item:last-child { border: none; }
 
-/* MOBILE RESPONSIVE (Phone Only) */
-.mobile-header {
-    display: none; /* Hidden on PC */
-}
-
-To ensure we fix the transparency, the "white squares" on buttons, and the blue dot all at once, yes—this is the complete and optimized @media block for your styles.css.
-
-I have added -webkit-appearance: none and box-shadow: none to the buttons, which is usually the "secret ingredient" to killing those stubborn white boxes on iPhones and some Android browsers.
-
-Complete CSS @media Block
-CSS
-@media (max-width: 1000px) {
-    /* 1. Kill the PC Grid & Center Content */
-    .layout-grid { 
-        display: block !important; 
-    } 
-    .pc-only { 
-        display: none !important; 
-    }
-    
-    /* 2. Fix Mobile Header & Restore Blue Dot */
-    .mobile-header { 
-        display: flex !important; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 10px 15px; 
-        border-bottom: 1px solid var(--border); 
-        background: var(--bg) !important; 
-        position: sticky; 
-        top: 0; 
-        z-index: 100; 
-    }
-
-    /* 3. The "Anti-White-Square" Button Fix */
-    .nav-btn { 
-        background: transparent !important; 
-        background-color: transparent !important;
-        border: none !important; 
-        outline: none !important; 
-        box-shadow: none !important;
-        -webkit-appearance: none; /* Critical for iOS/Safari */
-        font-size: 1.6rem; 
-        color: var(--text) !important; 
-        cursor: pointer; 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5px;
-    }
-
-    .logo-mobile {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text);
-    }
-
-    /* Force the dot to be Blue (#1d9bf0) */
-    .logo-mobile span {
-        color: #1d9bf0 !important;
-    }
-
-    /* 4. Force Solid Sidebar Drawers */
-    .sidebar { 
-        position: fixed !important; 
-        top: 0; 
-        width: 280px; 
-        height: 100vh; 
-        z-index: 1000 !important; 
-        transition: transform 0.3s ease; 
-        padding-top: 10px;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Target Dark and Light themes specifically to ensure solid paint */
-    [data-theme="dark"] .sidebar {
-        background-color: #000000 !important;
-    }
-    [data-theme="light"] .sidebar {
-        background-color: #ffffff !important;
-    }
-
-    .left-sidebar { 
-        left: 0; 
-        transform: translateX(-100%); 
-        border-right: 1px solid var(--border); 
-    }
-    
-    .right-sidebar { 
-        right: 0; 
-        transform: translateX(100%); 
-        border-left: 1px solid var(--border); 
-    }
-
-    .sidebar.active { 
-        transform: translateX(0) !important; 
-    }
-
-    /* 5. Overlay & Feed Adjustments */
-    #drawer-overlay.active { 
-        display: block !important; 
-        position: fixed; 
-        inset: 0; 
-        background: rgba(0,0,0,0.8) !important; 
-        z-index: 500; 
-        backdrop-filter: blur(4px);
-    }
-
-    .feed-container { 
-        width: 100% !important; 
-        border: none !important; 
-    }
-
-    .trends-card {
-        margin: 10px;
-    }
-}
-/* Modal Restoration */
+/* Modal Styling */
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; }
 .modal-content { background: var(--bg); max-width: 600px; margin: 30px auto; border-radius: 16px; padding: 25px; height: 85vh; overflow-y: auto; position: relative; }
 .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--dim); }
+
+/* --- MOBILE RESPONSIVE FIXES --- */
+.mobile-header, #drawer-overlay { display: none; }
+
+@media (max-width: 1000px) {
+    /* 1. Kill the PC Grid */
+    .layout-grid { display: block !important; } 
+    .pc-only { display: none !important; }
+    
+    /* 2. Mobile Header */
+    .mobile-header { 
+        display: flex !important; justify-content: space-between; align-items: center; 
+        padding: 10px 15px; border-bottom: 1px solid var(--border); 
+        background: var(--bg) !important; position: sticky; top: 0; z-index: 100; 
+    }
+    
+    .nav-btn { 
+        background: transparent !important; background-color: transparent !important;
+        border: none !important; outline: none !important; box-shadow: none !important;
+        -webkit-appearance: none; font-size: 1.6rem; color: var(--text) !important; 
+        cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px;
+    }
+    
+    .logo-mobile { font-size: 1.8rem; font-weight: 700; color: var(--text); }
+    .logo-mobile span { color: #1d9bf0 !important; }
+
+    /* 3. Solid Mobile Drawers */
+    .sidebar { 
+        position: fixed !important; top: 0; width: 280px; height: 100vh; 
+        z-index: 1000 !important; transition: transform 0.3s ease; padding-top: 10px;
+        visibility: visible !important; opacity: 1 !important;
+    }
+    
+    [data-theme="dark"] .sidebar { background-color: #000000 !important; }
+    [data-theme="light"] .sidebar { background-color: #ffffff !important; }
+
+    .left-sidebar { left: 0; transform: translateX(-100%); border-right: 1px solid var(--border); }
+    .right-sidebar { right: 0; transform: translateX(100%); border-left: 1px solid var(--border); }
+    .sidebar.active { transform: translateX(0) !important; }
+
+    /* 4. Overlay & Feed */
+    #drawer-overlay.active { 
+        display: block !important; position: fixed; inset: 0; 
+        background: rgba(0,0,0,0.8) !important; z-index: 500; backdrop-filter: blur(4px);
+    }
+    .feed-container { width: 100% !important; border: none !important; }
+    .trends-card { margin: 10px; }
+}
