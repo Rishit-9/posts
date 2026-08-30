@@ -10,13 +10,40 @@ function closeAllDrawers() {
     document.getElementById('drawer-overlay').classList.remove('active');
 }
 
+// 🕒 NEW: Converts the post's time to the viewer's local device time
+function formatLocalTime(dateStr) {
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr; // Fallback if format is weird
+        
+        // Formats to e.g., "Aug 31, 2026, 4:37 PM"
+        return d.toLocaleString(undefined, { 
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: 'numeric', minute: '2-digit'
+        });
+    } catch (e) {
+        return dateStr;
+    }
+}
+
+function resetFeed() {
+    renderPosts(allPosts);
+    document.querySelector('.feed-header h2').innerText = 'Home';
+    document.getElementById('searchBar').value = '';
+    window.location.hash = '';
+    closeAllDrawers();
+}
+
 async function init() {
     try {
         const res = await fetch('posts.json');
         const files = await res.json();
         const promises = files.map(f => fetch(`data/${f}`).then(r => r.json()));
         allPosts = await Promise.all(promises);
+        
+        // Sorting works perfectly with the new full timestamps
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
         renderPosts(allPosts);
         renderTrends();
         checkURL();
@@ -29,9 +56,11 @@ function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <div class="avatar">A</div>
+            <!-- PFP updated to RG -->
+            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
             <div class="post-body">
-                <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
+                <!-- Username updated to Rishit and Date uses formatLocalTime -->
+                <div class="post-header"><b>Rishit</b> <span style="color:var(--dim)">@me · ${formatLocalTime(p.date)}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
                 ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img" onerror="this.style.display='none'">` : ''}
                 <div style="margin-top:10px; color:var(--accent); font-weight:600;">
@@ -61,14 +90,6 @@ function filterByTag(tag) {
     document.querySelector('.feed-header h2').innerText = `#${tag}`;
 }
 
-function resetFeed() {
-    renderPosts(allPosts); // Brings back all posts
-    document.querySelector('.feed-header h2').innerText = 'Home'; // Resets the top header
-    document.getElementById('searchBar').value = ''; // Clears the search bar
-    window.location.hash = ''; // Clears any post ID from the URL
-    closeAllDrawers(); // Keeps mobile clean
-}
-
 document.getElementById('searchBar').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = allPosts.filter(p => 
@@ -86,10 +107,12 @@ function openPost(id) {
     const body = document.getElementById('modalBody');
     body.innerHTML = `
         <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <div class="avatar">A</div>
+            <!-- PFP updated to RG -->
+            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
             <div>
-                <b>Admin</b> <span style="color:var(--dim)">@me</span>
-                <div style="color:var(--dim); font-size:0.9rem;">${post.date}</div>
+                <!-- Username updated to Rishit -->
+                <b>Rishit</b> <span style="color:var(--dim)">@me</span>
+                <div style="color:var(--dim); font-size:0.9rem;">${formatLocalTime(post.date)}</div>
             </div>
         </div>
         <div style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap; margin-bottom:15px;">${post.fullContent}</div>
