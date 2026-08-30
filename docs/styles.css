@@ -1,10 +1,12 @@
 :root[data-theme="dark"] {
     --bg: #000000; --border: #2f3336; --text: #e7e9ea; --dim: #71767b;
     --accent: #1d9bf0; --hover: rgba(255,255,255,0.05); --card: #16181c;
+    --header-bg: rgba(0, 0, 0, 0.85); /* Dark Glass */
 }
 :root[data-theme="light"] {
     --bg: #ffffff; --border: #eff3f4; --text: #0f1419; --dim: #536471;
     --accent: #1d9bf0; --hover: rgba(0,0,0,0.03); --card: #f7f9f9;
+    --header-bg: rgba(255, 255, 255, 0.85); /* Light Glass */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +48,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .feed-container { border-right: 1px solid var(--border); min-height: 100vh; }
 .feed-header { 
     padding: 15px 20px; border-bottom: 1px solid var(--border); 
-    position: sticky; top: 0; background: rgba(0,0,0,0.85); 
+    position: sticky; top: 0; background: var(--header-bg); /* Now uses dynamic variable */
     backdrop-filter: blur(12px); z-index: 50; 
 }
 
