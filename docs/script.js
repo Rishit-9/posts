@@ -33,7 +33,7 @@ function renderPosts(posts) {
             <div class="post-body">
                 <div class="post-header"><b>Admin</b> <span style="color:var(--dim)">@me · ${p.date}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
-                ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img">` : ''}
+                ${p.images && p.images.length ? `<img src="${p.images[0]}" class="post-img" onerror="this.style.display='none'">` : ''}
                 <div style="margin-top:10px; color:var(--accent); font-weight:600;">
                     ${p.tags.map(t => `#${t}`).join(' ')}
                 </div>
@@ -85,7 +85,7 @@ function openPost(id) {
             </div>
         </div>
         <div style="font-size:1.2rem; line-height:1.6; white-space:pre-wrap; margin-bottom:15px;">${post.fullContent}</div>
-        ${post.images.map(img => `<img src="${img}" class="post-img">`).join('')}
+        ${post.images.map(img => `<img src="${img}" class="post-img" onerror="this.style.display='none'">`).join('')}
         <div style="margin-top:15px; color:var(--accent); font-weight:bold;">
             ${post.tags.map(t => `#${t}`).join(' ')}
         </div>
