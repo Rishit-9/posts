@@ -8,14 +8,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Mobile Header (Hidden on PC) -->
     <header class="mobile-header">
         <button class="nav-btn" onclick="toggleDrawer('leftNav')">☰</button>
         <h1 class="logo-mobile" onclick="location.hash=''; location.reload();">P<span>.</span></h1>
         <button class="nav-btn" onclick="toggleDrawer('rightNav')">#</button>
     </header>
+
+    <!-- Overlay for Mobile Menus -->
     <div id="drawer-overlay" onclick="closeAllDrawers()"></div>
 
     <div class="layout-grid">
+        <!-- Left Sidebar (Menu) -->
         <aside class="sidebar left-sidebar" id="leftNav">
             <div class="sidebar-inner">
                 <h1 class="logo pc-only">P<span>.</span></h1>
@@ -26,13 +30,17 @@
             </div>
         </aside>
 
+        <!-- Center Feed -->
         <main class="feed-container">
             <header class="feed-header">
                 <h2>Home</h2>
             </header>
-            <div id="app"></div>
+            <div id="app">
+                <div style="padding: 20px; color: var(--dim);">Loading posts...</div>
+            </div>
         </main>
 
+        <!-- Right Sidebar (Trends & Search) -->
         <aside class="sidebar right-sidebar" id="rightNav">
             <div class="sidebar-inner">
                 <div class="search-container">
@@ -46,6 +54,7 @@
         </aside>
     </div>
 
+    <!-- Full Post Modal -->
     <div id="modal" class="modal" onclick="closeModalOnSideClick(event)">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
