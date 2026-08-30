@@ -124,3 +124,24 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     .feed-container { width: 100% !important; border: none !important; }
     .trends-card { margin: 10px; }
 }
+/* Share Button Styling */
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.share-btn:hover {
+    background: var(--hover);
+    color: var(--accent);
+}
