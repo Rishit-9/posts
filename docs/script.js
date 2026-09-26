@@ -31,13 +31,13 @@ function resetFeed() {
     closeAllDrawers();
 }
 
-// Share Button Logic
+// Fixed Double Slash in Share Link
 function sharePost(id, e) {
     if (e) e.stopPropagation(); 
     
     let siteUrl = window.location.origin + window.location.pathname;
-    if (!siteUrl.endsWith('/')) siteUrl += '/';
-    const shareLink = `${siteUrl}p/${id}.html`;
+    if (siteUrl.endsWith('/')) siteUrl = siteUrl.slice(0, -1);
+    const shareLink = `${siteUrl}/p/${id}.html`;
     
     navigator.clipboard.writeText(shareLink).then(() => {
         const btn = e.target.closest('.share-btn');
@@ -51,12 +51,18 @@ function sharePost(id, e) {
     });
 }
 
+// Dynamically sets the Discord PFP or defaults to RG
+function getPfpHtml(pfpUrl) {
+    return pfpUrl 
+        ? `<img src="${pfpUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
+        : `RG`;
+}
+
 async function init() {
     try {
         const res = await fetch('posts.json');
         const files = await res.json();
         
-        // Fetch all files, but silently ignore any that return 404 errors
         const promises = files.map(f => 
             fetch(`data/${f}`)
                 .then(r => r.ok ? r.json() : null)
@@ -64,11 +70,8 @@ async function init() {
         );
         
         const results = await Promise.all(promises);
-        
-        // Filter out the missing/null files
         allPosts = results.filter(p => p !== null);
         
-        // If there are literally 0 valid posts, trigger the empty state
         if (allPosts.length === 0) throw new Error("No valid posts");
 
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -84,7 +87,9 @@ function renderPosts(posts) {
     const container = document.getElementById('app');
     container.innerHTML = posts.map(p => `
         <article class="post" onclick="openPost('${p.id}')">
-            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
+            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px; padding:0;">
+                ${getPfpHtml(p.authorPfp)}
+            </div>
             <div class="post-body">
                 <div class="post-header"><b>Rishit</b> <span style="color:var(--dim)">@me · ${formatLocalTime(p.date)}</span></div>
                 <div class="post-text" style="margin: 8px 0;">${p.previewText}</div>
@@ -139,7 +144,9 @@ function openPost(id) {
     const body = document.getElementById('modalBody');
     body.innerHTML = `
         <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px;">RG</div>
+            <div class="avatar" style="font-size:1rem; letter-spacing:-0.5px; padding:0;">
+                ${getPfpHtml(post.authorPfp)}
+            </div>
             <div>
                 <b>Rishit</b> <span style="color:var(--dim)">@me</span>
                 <div style="color:var(--dim); font-size:0.9rem;">${formatLocalTime(post.date)}</div>
