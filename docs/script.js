@@ -55,8 +55,22 @@ async function init() {
     try {
         const res = await fetch('posts.json');
         const files = await res.json();
-        const promises = files.map(f => fetch(`data/${f}`).then(r => r.json()));
-        allPosts = await Promise.all(promises);
+        
+        // Fetch all files, but silently ignore any that return 404 errors
+        const promises = files.map(f => 
+            fetch(`data/${f}`)
+                .then(r => r.ok ? r.json() : null)
+                .catch(() => null)
+        );
+        
+        const results = await Promise.all(promises);
+        
+        // Filter out the missing/null files
+        allPosts = results.filter(p => p !== null);
+        
+        // If there are literally 0 valid posts, trigger the empty state
+        if (allPosts.length === 0) throw new Error("No valid posts");
+
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
         renderPosts(allPosts);
         renderTrends();
